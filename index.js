@@ -7,6 +7,16 @@ const server =  http.createServer(function(request, response){
         let allJokes = getAllJokes(request, response);
         response.writeHead(200, {"Content-type" : "text/json"});
         response.end(JSON.stringify(allJokes));
+    }else if(request.url === "/api/jokes" && request.method === "POST"){
+        let data = '';
+        request.on('data', function(chunk){
+            data += chunk;
+        })
+        request.on('data', function(chunk){
+            addJoke(data);
+        })
+        response.writeHead(200);
+        response.end();
     }
 })
 
@@ -23,4 +33,12 @@ function getAllJokes(request, response){
         arraOfjokes.push(joke);
     }
     return arraOfjokes;
+}
+function addJoke(jokeSring){
+    let joke = JSON.parse(jokeSring);
+    joke.likes = 0;
+    joke.dislikes = 0;
+    let pathToData = path.join(__dirname, "data");
+    let pathToFile = path.join(pathToData, `${fs.readdirSync(pathToData).length}.json`)
+    fs.writeFileSync(pathToFile, JSON.stringify(joke));
 }
