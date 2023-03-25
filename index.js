@@ -4,6 +4,7 @@ const http = require('http');
 const url = require('url');
 
 const server =  http.createServer(function(request, response){
+    response.setHeader('Access-Control-Allow-Origin', '*');
     if(request.url === "/api/jokes" && request.method === "GET"){
         let allJokes = getAllJokes(request, response);
         response.writeHead(200, {"Content-type" : "text/json"});
@@ -59,6 +60,7 @@ function addJoke(jokeSring){
     joke.likes = 0;
     joke.dislikes = 0;
     let pathToData = path.join(__dirname, "data");
+    joke.id = fs.readdirSync(pathToData),length;
     let pathToFile = path.join(pathToData, `${fs.readdirSync(pathToData).length}.json`);
     fs.writeFileSync(pathToFile, JSON.stringify(joke));
 }
